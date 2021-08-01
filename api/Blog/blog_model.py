@@ -8,6 +8,7 @@ class Blog(db.Model):
     content = db.Column(db.Text, nullable=False)
     feature_image = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    tags = db.relationship('Tag', secondary=tag_blog, backref=db.backref('blogs_associated', lazy="dynamic"))
 
     @property
     def serialize(self):
