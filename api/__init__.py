@@ -14,4 +14,7 @@ def create_app():
     CORS(app)
 
     db.init_app(app)
+
+    from api.Blog.blog_routes import blogs
+    app.register_blueprint(blogs)
     return app
