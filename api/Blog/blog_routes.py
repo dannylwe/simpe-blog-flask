@@ -1,6 +1,7 @@
 from api.Blog.blog_model import Blog
 from api.Tag.tag_model import Tag
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from api import db
 
 blogs = Blueprint('blogs', __name__)
@@ -40,7 +41,7 @@ def get_all_blogs():
         serialized_data.append(blog.serialize)
     return jsonify({"all_blogs": serialized_data})
 
-@blogs.route('/blog/<int: id>', methods=["GET"])
+@blogs.route('/blog/<int:id>', methods=["GET"])
 def get_single_blog(id):
     """
     Get a single Blog by id
@@ -54,7 +55,7 @@ def get_single_blog(id):
 
     return jsonify({"single_blog": serialized_blog})
 
-@blogs.route('/update_blog/<int: id>', methods=["PUT"])
+@blogs.route('/update_blog/<int:id>', methods=["PUT"])
 def update_blog(id):
     data = request.get_json()
     blog = Blog.query.filter_by(id=id).first_or_404()
@@ -68,7 +69,8 @@ def update_blog(id):
     db.session.commit()
     return jsonify({"blog_id": blog.id})
 
-@blog.route('/delete_blog/<int: id>', methods=["DELETE"])
+@blogs.route('/delete_blog/<int:id>', methods=["DELETE"])
+@jwt_required
 def delete_blog(id):
     blog = Blog.query.filter_by(id=id).first_or_404()
     db.session.delete(blog)
